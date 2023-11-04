@@ -24,8 +24,9 @@ public class index {
         while (initCondition) {
             System.out.println("Eliga una opcion: ");
             System.out.println("1. Mostrar la lista");
-            System.out.println("2. confirmar compra");
-            System.out.println("3. Salir\n");
+            System.out.println("2. Confirmar compra");
+            System.out.println("3. Mostar los usuarios");
+            System.out.println("4. Salir\n");
             System.out.println("Inserte su accion:");
 
             try {
@@ -35,47 +36,66 @@ public class index {
                     case 1:
                         mostrarExcel();
                         break;
+
                     case 2:
                         ArrayList<String> setListaArrayListStrings = new ArrayList<String>();
                         System.out.println("----------------------------");
-                        System.out.println("inserte su nombre: ");
+                        System.out.println("Inserte su nombre: ");
                         String perNombre = sc.next();
                         persona.setNombre(perNombre);
-                        System.out.println("Hola " + perNombre + "\n¿ Cual es su DNI ? ");
-                        String dniPer = sc.next();
-                        persona.setDni(dniPer);
-                        System.out.println("Productos disponibles");
-                        mostrarExcelSoloTitulo();
-                        System.out.println("Que producto quiere : \n");
-                        int userImput = sc.nextInt();
-                        persona.setListaCompra(recogerDatosExcel(userImput));
-                        System.out.println("Los productos que ha cogido son : ");
-                        int iterationProducts = 0;
-                        for(String lechuga : recogerDatosExcel(userImput)){
-                            if (lechuga == null) {
-                                lechuga = "No existe ese producto, pruebe otra vez";
-                            }  
-                            if (iterationProducts == 0) {
+                        try {
+                            Integer.parseInt(perNombre);
+                            System.out.println("Nombre no valido");
+                        } catch (Exception e) {
 
-                                System.out.println("Producto: "+lechuga);
-                            }else{
-                              System.out.println("ID: "+lechuga);  
+                            System.out.println("Hola " + perNombre + "\n¿ Cual es su DNI ? ");
+                            String dniPer = sc.next();
+                            persona.setDni(dniPer);
+                            System.out.println("Productos disponibles");
+                            mostrarExcelSoloTitulo();
+                            System.out.println("Que producto quiere : \n");
+                            int userImput = sc.nextInt();
+                            persona.setListaCompra(recogerDatosExcel(userImput));
+                            System.out.println("Los productos que ha cogido son : ");
+                            int iterationProducts = 0;
+                            for (String lechuga : recogerDatosExcel(userImput)) {
+                                if (lechuga == null) {
+                                    lechuga = "No existe ese producto, pruebe otra vez";
+                                    break;
+                                } else {
+                                    if (iterationProducts == 0) {
+
+                                        System.out.println("Producto: " + lechuga);
+                                    } else {
+                                        System.out.println("ID: " + lechuga);
+                                    }
+
+                                    iterationProducts++;
+                                }
+
                             }
-                            
-                            iterationProducts ++;
-                        } 
-                        setListaArrayListStrings.add(dniPer);
-                        setListaArrayListStrings.add(perNombre);
-                        persona.setListaCompra(setListaArrayListStrings);
 
-                        list.setListaPersonas(setListaArrayListStrings);
-                        break;
+                            setListaArrayListStrings.add(dniPer);
+                            setListaArrayListStrings.add(perNombre);
+                            setListaArrayListStrings.addAll(recogerDatosExcel(userImput));
+
+                            list.setListaPersonas(setListaArrayListStrings);
+
+                            break;
+                        }
                     case 3:
+                        
+                         for (int i = 0; i < list.getListaPersonas().size(); i++) {
+                             System.out.println(list.getListaPersonas().get(i));
+                         }
+                        break;
+                    case 4:
                         System.out.println("Saliendo del programa");
                         initCondition = false;
                         break;
+
                     default:
-                        break;
+                        System.out.println("algo salió mal, pruebe otra vez");
                 }
 
             } catch (InputMismatchException e) {
@@ -88,7 +108,7 @@ public class index {
 
         }
     }
-
+   
     public static void mostrarExcel() {
 
         XSSFRow row;
