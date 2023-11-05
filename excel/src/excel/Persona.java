@@ -23,4 +23,8 @@ public class Persona {
     public void setListaCompra(ArrayList<String> listaCompra) {
         ListaCompra = listaCompra;
     }
+
+
+
+   
 }

@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Iterator;
 import java.util.Scanner;
-
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -15,9 +14,17 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class index {
+    static Persona persona = new Persona();
+    static double total = 0.0;
+    static String perNombre = "";
 
+    /**
+     * Método principal que inicia la aplicación.
+     *
+     * @param args Argumentos de la línea de comandos (no se utilizan en este programa).
+     * @throws IOException Excepción lanzada en caso de errores de E/S.
+     */
     public static void main(String[] args) throws IOException {
-        Persona persona = new Persona();
         listaPersonas list = new listaPersonas();
         Boolean initCondition = true;
 
@@ -25,8 +32,7 @@ public class index {
             System.out.println("Eliga una opcion: ");
             System.out.println("1. Mostrar la lista");
             System.out.println("2. Confirmar compra");
-            System.out.println("3. Mostar los usuarios");
-            System.out.println("4. Salir\n");
+            System.out.println("3. Salir\n");
             System.out.println("Inserte su accion:");
 
             try {
@@ -42,81 +48,95 @@ public class index {
                         System.out.println("----------------------------");
                         System.out.println("Inserte su nombre: ");
                         String perNombre = sc.next();
-                        persona.setNombre(perNombre);
+                        persona.setNombre("Nombre : " + perNombre);
                         try {
                             Integer.parseInt(perNombre);
                             System.out.println("Nombre no valido");
                         } catch (Exception e) {
-
-                            System.out.println("Hola " + perNombre + "\n¿ Cual es su DNI ? ");
+                            System.out.println("Hola " + perNombre + "\n¿Cual es su DNI?, insertar solo los primeros 7 numeros ");
                             String dniPer = sc.next();
-                            persona.setDni(dniPer);
-                            System.out.println("Productos disponibles");
-                            mostrarExcelSoloTitulo();
-                            System.out.println("Que producto quiere : \n");
-                            int userImput = sc.nextInt();
-                            persona.setListaCompra(recogerDatosExcel(userImput));
-                            System.out.println("Los productos que ha cogido son : ");
-                            int iterationProducts = 0;
-                            for (String lechuga : recogerDatosExcel(userImput)) {
-                                if (lechuga == null) {
-                                    lechuga = "No existe ese producto, pruebe otra vez";
-                                    break;
-                                } else {
-                                    if (iterationProducts == 0) {
-
-                                        System.out.println("Producto: " + lechuga);
-                                    } else {
-                                        System.out.println("ID: " + lechuga);
-                                    }
-
-                                    iterationProducts++;
-                                }
-
+                            if (dniPer.length() != 7) {
+                                System.out.println("No es un DNI valido");
+                                System.out.println("-----------------------");
+                                dniPer = "No es un DNI valido";
+                                break;
                             }
+                            try {
+                                Integer.parseInt(dniPer);
+                                System.out.println("¿Cual es la letra de su DNI?");
+                                String ltrDni = sc.next();
+                                if (ltrDni.length() != 1) {
+                                    ltrDni = null;
+                                    System.out.println("Letra no valida");
+                                    break;
+                                }
+                                try {
+                                    Integer.parseInt(ltrDni);
+                                    System.out.println("No es una letra, intentelo otra vez");
+                                } catch (Exception p) {
+                                    dniPer = dniPer + ltrDni;
+                                    persona.setDni(dniPer + ltrDni);
+                                    System.out.println("Productos disponibles");
+                                    mostrarExcel();
+                                    Boolean keepBuying = true;
+                                    while (keepBuying) {
+                                        System.out.println("Inserte 1 para comprar, inserte 2 para salir: ");
+                                        int buy = sc.nextInt();
+                                        switch (buy) {
+                                            case 1:
+                                                System.out.println("Que producto quiere:\n");
+                                                int userImput = sc.nextInt();
 
-                            setListaArrayListStrings.add(dniPer);
-                            setListaArrayListStrings.add(perNombre);
-                            setListaArrayListStrings.addAll(recogerDatosExcel(userImput));
+                                                setListaArrayListStrings.addAll(recogerDatosExcel(userImput));
+                                                list.setListaPersonas(setListaArrayListStrings);
+                                                break;
 
-                            list.setListaPersonas(setListaArrayListStrings);
+                                            case 2:
+                                                System.out.println("La lista de la compra de " + perNombre + "\ncon DNI: " + dniPer + " es:");
+                                                for (String listaPer : list.getListaPersonas()) {
+                                                    System.out.println(listaPer);
+                                                }
+                                                System.out.println("Su total es: " + total);
+                                                keepBuying = false;
+                                                break;
 
-                            break;
+                                            default:
+                                        }
+                                    }
+                                }
+                            } catch (Exception j) {
+                                System.out.println("El DNI no es valido, pruebe otra vez");
+                                break;
+                            }
                         }
-                    case 3:
-                        
-                         for (int i = 0; i < list.getListaPersonas().size(); i++) {
-                             System.out.println(list.getListaPersonas().get(i));
-                         }
+                        setListaArrayListStrings.add(persona.getDni());
+                        setListaArrayListStrings.add(perNombre);
                         break;
-                    case 4:
+
+                    case 3:
                         System.out.println("Saliendo del programa");
                         initCondition = false;
                         break;
 
                     default:
-                        System.out.println("algo salió mal, pruebe otra vez");
+                        System.out.println("Algo salió mal, pruebe otra vez");
                 }
-
             } catch (InputMismatchException e) {
-
                 System.out.println("------------------------------------------");
                 System.out.println("Operacion no valida, inserte un numero");
                 System.out.println("------------------------------------------");
-
             }
-
         }
     }
-   
-    public static void mostrarExcel() {
 
+    /**
+     * Muestra los productos disponibles desde un archivo Excel.
+     */
+    public static void mostrarExcel() {
         XSSFRow row;
         FileInputStream fis;
         try {
-            fis = new FileInputStream(
-                    new File("excel\\Productos.xlsx"));
-
+            fis = new FileInputStream(new File("excel\\Productos.xlsx"));
             XSSFWorkbook workbook = new XSSFWorkbook(fis);
             XSSFSheet spreadsheet = workbook.getSheetAt(0);
             Iterator<Row> rowIterator = spreadsheet.iterator();
@@ -127,138 +147,116 @@ public class index {
                     Cell cell = cellIterator.next();
                     int cellColumn = cell.getColumnIndex();
                     if (cellColumn == 0 || cellColumn == 1) {
-
                         switch (cell.getCellType()) {
                             case NUMERIC:
-                                System.out.print(
-                                        "\t" + (int) cell.getNumericCellValue() + "\t\t");
+                                System.out.print("\t" + (int) cell.getNumericCellValue() + "\t\t");
                                 break;
                             case STRING:
                                 if (cell.getStringCellValue().length() < 8) {
-                                    System.out.print(
-                                            "\t" + cell.getStringCellValue() + "\t\t");
+                                    System.out.print("\t" + cell.getStringCellValue() + "\t\t");
                                 } else {
-                                    System.out.print(
-                                            "\t" + cell.getStringCellValue() + "\t");
+                                    System.out.print("\t" + cell.getStringCellValue() + "\t");
                                 }
-
                                 break;
                             default:
                                 System.out.println("Error, tipo de dato no soportado: " + cell.getColumnIndex());
                         }
                     }
-
                 }
                 System.out.println();
             }
             workbook.close();
         } catch (Exception e) {
-
             e.printStackTrace();
         }
     }
 
-    public static void mostrarExcelSoloTitulo() {
+    /**
+     * Recoge datos de productos desde el archivo Excel en función de la entrada del usuario.
+     *
+     * @param userInput El ID del producto seleccionado por el usuario.
+     * @return Una lista de información sobre el producto seleccionado.
+     */
+    /**
+ * Recoge datos de productos desde el archivo Excel en función de la entrada del usuario.
+ *
+ * @param userInput El ID del producto seleccionado por el usuario.
+ * @return Una lista de información sobre el producto seleccionado.
+ */
+public static ArrayList<String> recogerDatosExcel(int userInput) {
+    // Lista para almacenar la información del producto seleccionado.
+    ArrayList<String> productInfo = new ArrayList<>();
 
-        XSSFRow row;
-        FileInputStream fis;
-        try {
-            fis = new FileInputStream(
-                    new File("excel\\Productos.xlsx"));
+    XSSFRow row;
+    FileInputStream fis;
+    String productNameSS = "";
+    String IdProductoDevolverS = "";
+    String productPriceS = "";
+    double returnPrice = 0.0;
 
-            XSSFWorkbook workbook = new XSSFWorkbook(fis);
-            XSSFSheet spreadsheet = workbook.getSheetAt(0);
-            Iterator<Row> rowIterator = spreadsheet.iterator();
-            while (rowIterator.hasNext()) {
-                row = (XSSFRow) rowIterator.next();
-                Iterator<Cell> cellIterator = row.cellIterator();
-                while (cellIterator.hasNext()) {
-                    Cell cell = cellIterator.next();
-                    int cellColumn = cell.getColumnIndex();
-                    if (cellColumn == 0) {
+    try {
+        // Abre el archivo Excel para lectura.
+        fis = new FileInputStream(new File("excel\\Productos.xlsx"));
+        XSSFWorkbook workbook = new XSSFWorkbook(fis);
+        XSSFSheet spreadsheet = workbook.getSheetAt(0);
+        Iterator<Row> rowIterator = spreadsheet.iterator();
 
-                        switch (cell.getCellType()) {
-                            case NUMERIC:
-                                System.out.print(
-                                        cell.getRowIndex() + "\t" + (int) cell.getNumericCellValue() + "\t\t");
-                                break;
-                            case STRING:
-                                if (cell.getStringCellValue().length() < 8) {
-                                    System.out.print(
-                                            cell.getRowIndex() + "\t" + cell.getStringCellValue() + "\t\t");
-                                } else {
-                                    System.out.print(
-                                            cell.getRowIndex() + "\t" + cell.getStringCellValue() + "\t");
-                                }
+        boolean firstRow = true;
 
-                                break;
-                            default:
-                                System.out.println("Error, tipo de dato no soportado: " + cell.getColumnIndex());
-                        }
-                    }
+        while (rowIterator.hasNext()) {
+            row = (XSSFRow) rowIterator.next();
 
-                }
-                System.out.println();
+            // Ignora la primera fila (encabezados).
+            if (firstRow) {
+                firstRow = false;
+                continue;
             }
-            workbook.close();
-        } catch (Exception e) {
 
-            e.printStackTrace();
-        }
-    }
+            Iterator<Cell> cellIterator = row.cellIterator();
 
-    public static ArrayList<String> recogerDatosExcel(int userImput) {
-        ArrayList<String> returnStrings = new ArrayList<String>();
-        XSSFRow row;
-        FileInputStream fis;
-        if (userImput > 13) {
-            System.out.println("No hay productos que coincidan con su peticion");
-            System.out.close();
-        }
-        try {
-            fis = new FileInputStream(
-                    new File("excel\\Productos.xlsx"));
+            while (cellIterator.hasNext()) {
+                Cell cell = cellIterator.next();
+                int cellCol = cell.getColumnIndex();
 
-            XSSFWorkbook workbook = new XSSFWorkbook(fis);
-            XSSFSheet spreadsheet = workbook.getSheetAt(0);
-            Iterator<Row> rowIterator = spreadsheet.iterator();
-            while (rowIterator.hasNext()) {
-                row = (XSSFRow) rowIterator.next();
-                Iterator<Cell> cellIterator = row.cellIterator();
-                while (cellIterator.hasNext()) {
-                    Cell cell = cellIterator.next();
-                    int cellRow = cell.getRowIndex();
-                    if (cellRow == userImput) {
-                        int cellCol = cell.getColumnIndex();
-                        if (cellCol == 0 || cellCol == 1) {
-                            switch (cell.getCellType()) {
-                                case NUMERIC:
+                if (cellCol == 1) {
+                    int productID = (int) cell.getNumericCellValue();
+                    Integer g = ((Integer) productID);
+                    String IdProductoDevolver = g.toString();
 
-                                    int a = ((int) cell.getNumericCellValue());
-                                    Integer s = ((Integer) a);
-                                    String devolver = s.toString();
-                                    returnStrings.add(devolver);
-                                    break;
-                                case STRING:
-                                    returnStrings.add(cell.getStringCellValue());
+                    // Si el ID del producto coincide con la entrada del usuario.
+                    if (productID == userInput) {
+                        // Obtiene el nombre del producto y su precio.
+                        String productName = row.getCell(0).getStringCellValue();
+                        double productPrice = row.getCell(3).getNumericCellValue();
+                        total = productPrice + total;
 
-                                    break;
-                                default:
-                                    System.out.println("Error, tipo de dato no soportado: " + cell.getColumnIndex());
-                            }
-                        }
-
+                        // Agrega la información del producto a la lista.
+                        productInfo.add(productName);
+                        productNameSS = productName;
+                        productInfo.add(IdProductoDevolver);
+                        IdProductoDevolverS = IdProductoDevolver;
+                        productInfo.add(String.valueOf(productPrice));
+                        int a = (int) productPrice;
+                        returnPrice = (double) a;
                     }
-
                 }
-
             }
-            workbook.close();
-            return returnStrings;
-        } catch (Exception e) {
-            System.out.println("Error");
-            return returnStrings;
-
         }
+
+        // Imprime información relevante.
+        System.out.println(productNameSS);
+        System.out.println(returnPrice);
+        System.out.println("Total : " + total);
+        System.out.println("-------------------");
+
+        // Cierra el archivo Excel.
+        workbook.close();
+
+        return productInfo;
+    } catch (IOException e) {
+        System.out.println("Error al acceder al archivo Excel");
+        return productInfo;
     }
+}
+
 }
