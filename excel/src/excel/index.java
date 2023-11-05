@@ -62,7 +62,7 @@ public class index {
                             // el usuario inserta el dni
                             String dniPer = sc.next();
                             // comprueba la longitud de los numeros del dni y en caso de que NO sea 7 ejecuta lo de dentro en cualquier otro caso continua
-                            if (dniPer.length() != 7) {
+                            if ( dniPer.length() != 8) {
                                 System.out.println("No es un DNI valido");
                                 System.out.println("-----------------------");
                                 dniPer = "No es un DNI valido";
@@ -95,7 +95,7 @@ public class index {
                                     Boolean keepBuying = true;
                                     // mientras la variable anterior sea cierta sigue comprando
                                     while (keepBuying) {
-                                        System.out.println("Inserte 1 para comprar\n inserte 2 para salir: ");
+                                        System.out.println("Inserte 1 para comprar\nInserte 2 para salir: ");
                                         // seteamos una variable para ver si quiere seguir comprando
                                         int buy = sc.nextInt();
                                         // comprueba el valor para ver que ejecutar
