@@ -60,7 +60,7 @@ public class index {
                             System.out.println("Nombre no valido");
                         } catch (Exception e) {
                             System.out.println(
-                                    "Hola " + perNombre + "\n¿Cual es su DNI?, insertar solo los primeros 7 numeros ");
+                                    "Hola " + perNombre + "\n¿Cual es su DNI?, insertar solo los primeros 8 numeros ");
                             // el usuario inserta el dni
                             String dniPer = sc.next();
                             // comprueba la longitud de los numeros del dni y en caso de que NO sea 7
