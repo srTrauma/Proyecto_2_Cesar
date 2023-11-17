@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Scanner;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -13,16 +14,22 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class excel {
+
     static double total = 0.0;
+    static String file = "excel\\Productos.xlsx";
+    static FileInputStream fis;
+    static XSSFRow row;
+    static String DNI = "";
+    static String IdProductoDevolverS = "";
+    static String productPriceS = "";
 
     public static void mostrarExcel() {
-        XSSFRow row;
-        FileInputStream fis;
+
         try {
             // Abre un flujo de entrada para el archivo "Productos.xlsx" ubicado en la
             // carpeta "excel"
             fis = new FileInputStream(new File(
-                    "C:\\Users\\jaime\\OneDrive\\Escritorio\\proyecto_java\\Proyecto_2_Cesar\\excel\\Productos.xlsx"));
+                    file));
             // Crea un objeto XSSFWorkbook para trabajar con el archivo Excel
             XSSFWorkbook workbook = new XSSFWorkbook(fis);
             // Obtiene la primera hoja del archivo Excel
@@ -72,88 +79,109 @@ public class excel {
         }
     }
 
-
-
-
-
-
-
-    
-    public static ArrayList<String> recogerDatosExcel(int userInput) {
-        // Lista para almacenar la información del producto seleccionado.
-        ArrayList<String> productInfo = new ArrayList<>();
-
-        XSSFRow row;
-        FileInputStream fis;
-        String productNameSS = "";
-        String IdProductoDevolverS = "";
-        String productPriceS = "";
-        double returnPrice = 0.0;
-
+    public static void recogerDatosExcel(int userInput) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Hola, cual es su nombre");
+        String nombre = sc.next();
+        System.out.println("Hola " + nombre + "\n cual es su dni :");
+        System.out.println("INSERTE SOLO LAS PRIMERAS 8 CIFRAS");
+        int dni = sc.nextInt();
         try {
-            // Abre el archivo Excel para lectura.
-            fis = new FileInputStream(new File(
-                    "C:\\Users\\jaime\\OneDrive\\Escritorio\\proyecto_java\\Proyecto_2_Cesar\\excel\\Productos.xlsx"));
-            XSSFWorkbook workbook = new XSSFWorkbook(fis);
-            XSSFSheet spreadsheet = workbook.getSheetAt(0);
-            Iterator<Row> rowIterator = spreadsheet.iterator();
+            String tryers = dni + "sa";
+            System.out.println("Dni no valido");
+        } catch (Exception e) {
+            System.out.println("Inserte la letra de su dni");
+            String letra_Dni = sc.next();
+            try {
+                Integer a = Integer.parseInt(letra_Dni);
+                a = 0;
+            } catch (Exception el) {
+                 DNI = dni + letra_Dni;
+                
+                System.out.println();
+                ArrayList<String> productInfo = new ArrayList<>();
+                persona persona = new persona();
+                String productNameSS = "";
+                
+                double returnPrice = 0.0;
 
-            boolean firstRow = true;
+                try {
+                    // Abre el archivo Excel para lectura.
+                    fis = new FileInputStream(new File(
+                            file));
+                    XSSFWorkbook workbook = new XSSFWorkbook(fis);
+                    XSSFSheet spreadsheet = workbook.getSheetAt(0);
+                    Iterator<Row> rowIterator = spreadsheet.iterator();
 
-            while (rowIterator.hasNext()) {
-                row = (XSSFRow) rowIterator.next();
+                    boolean firstRow = true;
 
-                // Ignora la primera fila (encabezados).
-                if (firstRow) {
-                    firstRow = false;
-                    continue;
-                }
+                    while (rowIterator.hasNext()) {
+                        row = (XSSFRow) rowIterator.next();
 
-                Iterator<Cell> cellIterator = row.cellIterator();
+                        // Ignora la primera fila (encabezados).
+                        if (firstRow) {
+                            firstRow = false;
+                            continue;
+                        }
 
-                while (cellIterator.hasNext()) {
-                    Cell cell = cellIterator.next();
-                    int cellCol = cell.getColumnIndex();
+                        Iterator<Cell> cellIterator = row.cellIterator();
 
-                    if (cellCol == 1) {
-                        int productID = (int) cell.getNumericCellValue();
-                        Integer g = ((Integer) productID);
-                        String IdProductoDevolver = g.toString();
+                        while (cellIterator.hasNext()) {
+                            Cell cell = cellIterator.next();
+                            int cellCol = cell.getColumnIndex();
 
-                        // Si el ID del producto coincide con la entrada del usuario.
-                        if (productID == userInput) {
-                            // Obtiene el nombre del producto y su precio.
-                            String productName = row.getCell(0).getStringCellValue();
-                            double productPrice = row.getCell(3).getNumericCellValue();
-                            total = productPrice + total;
+                            if (cellCol == 1) {
+                                int productID = (int) cell.getNumericCellValue();
+                                Integer g = ((Integer) productID);
+                                String IdProductoDevolver = g.toString();
 
-                            // Agrega la información del producto a la lista.
-                            productInfo.add(productName);
-                            productNameSS = productName;
-                            productInfo.add(IdProductoDevolver);
-                            IdProductoDevolverS = IdProductoDevolver;
-                            productInfo.add(String.valueOf(productPrice));
-                            int a = (int) productPrice;
-                            returnPrice = (double) a;
+                                // Si el ID del producto coincide con la entrada del usuario.
+                                if (productID == userInput) {
+                                    // Obtiene el nombre del producto y su precio.
+                                    String productName = row.getCell(0).getStringCellValue();
+                                    double productPrice = row.getCell(3).getNumericCellValue();
+                                    total = productPrice + total;
+
+                                    // Agrega la información del producto a la lista.
+                                    productInfo.add(productName);
+                                    productNameSS = productName;
+                                    productInfo.add(IdProductoDevolver);
+                                    IdProductoDevolverS = IdProductoDevolver;
+                                    productInfo.add(String.valueOf(productPrice));
+                                    int a = (int) productPrice;
+                                    returnPrice = (double) a;
+                                    persona.setListaCompra(productInfo);
+                                    persona.setDni(DNI);
+                                    persona.setNombre(nombre);
+                                    persona.setTotal(returnPrice);
+
+                                    System.out.println(persona.getNombre());
+                                    System.out.println(persona.getDni());
+                                }
+                            }
                         }
                     }
+
+                    // Imprime información relevante.
+                    System.out.println("Producto : " + productNameSS);
+                    System.out.println("Precio : " + returnPrice);
+                    System.out.println("Total : " + total);
+                    System.out.println("-------------------");
+
+                    // Cierra el archivo Excel.
+                    workbook.close();
+
+                    
+
+                } catch (IOException k) {
+                    System.out.println("Error al acceder al archivo Excel");
+                    
                 }
+                
             }
-
-            // Imprime información relevante.
-            System.out.println("Producto : " + productNameSS);
-            System.out.println("Precio : " + returnPrice);
-            System.out.println("Total : " + total);
-            System.out.println("-------------------");
-
-            // Cierra el archivo Excel.
-            workbook.close();
-
-            return productInfo;
-        } catch (IOException e) {
-            System.out.println("Error al acceder al archivo Excel");
-            return productInfo;
+            
         }
+
     }
 
 }

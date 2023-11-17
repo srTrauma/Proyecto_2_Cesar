@@ -28,8 +28,7 @@ public class ogIndex {
                         break;
 
                     case 2:
-                    System.out.println("Hola, cual es su nombre");
-                    String nombreUser = sc.next();
+                   
                         excel.mostrarExcel();
                         System.out.println("Inserte el ID del producto que quiere comprar");
                         Integer userInput = sc.nextInt();
