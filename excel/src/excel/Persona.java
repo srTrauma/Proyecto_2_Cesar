@@ -1,7 +1,8 @@
 package excel;
 import java.util.ArrayList;
 
-public class Persona {
+public class persona {
+    
     public String getNombre() {
         return nombre;
     }
@@ -9,6 +10,9 @@ public class Persona {
         this.nombre = nombre;
     }
     private String nombre;
+
+
+
     public String getDni() {
         return dni;
     }
@@ -16,6 +20,9 @@ public class Persona {
         this.dni = dni;
     }
     private String dni;
+
+
+
     private ArrayList<String> ListaCompra = new ArrayList<String>();
     public ArrayList<String> getListaCompra() {
         return ListaCompra;

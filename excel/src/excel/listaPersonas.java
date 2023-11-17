@@ -2,13 +2,13 @@ package excel;
 import java.util.ArrayList;
 
 public class listaPersonas {
-    public ArrayList<String> getListaPersonas() {
+    public ArrayList<persona> getListaPersonas() {
         return listaPersonas;
     }
 
-    public void setListaPersonas(ArrayList<String> listaPersonas) {
+    public void setListaPersonas(ArrayList<persona> listaPersonas) {
         this.listaPersonas = listaPersonas;
     }
 
-    private ArrayList<String> listaPersonas = new ArrayList<String>();
+    private ArrayList<persona> listaPersonas = new ArrayList<persona>();
 }
