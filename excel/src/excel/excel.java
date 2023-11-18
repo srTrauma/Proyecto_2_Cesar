@@ -15,13 +15,14 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class excel {
 
-    static double total = 0.0;
-    static String file = "excel\\Productos.xlsx";
+    static String file = "excel/Productos.xlsx";
     static FileInputStream fis;
     static XSSFRow row;
     static String DNI = "";
     static String IdProductoDevolverS = "";
     static String productPriceS = "";
+    static Scanner sc = new Scanner(System.in);
+    static int userInput = 0;
 
     public static void mostrarExcel() {
 
@@ -79,31 +80,40 @@ public class excel {
         }
     }
 
-    public static void recogerDatosExcel(int userInput) {
-        Scanner sc = new Scanner(System.in);
-        System.out.println("Hola, cual es su nombre");
-        String nombre = sc.next();
-        System.out.println("Hola " + nombre + "\n cual es su dni :");
-        System.out.println("INSERTE SOLO LAS PRIMERAS 8 CIFRAS");
-        int dni = sc.nextInt();
-        try {
-            String tryers = dni + "sa";
-            System.out.println("Dni no valido");
-        } catch (Exception e) {
+    public static void recogerDatosExcel() {
+        Integer nigus = 0;
+        
+        Boolean keepCase2 = true;
+        double total = 0.0;
+        do {
+
+            excel.mostrarExcel();
+            System.out.println("Inserte el ID del producto que quiere comprar , escriba salir si no quiere comprar");
+
+            userInput = sc.nextInt();
+
+            if (nigus == 0) {
+                persona persona = new persona();
+            System.out.println("Hola, cual es su nombre");
+            String nombre = sc.next();
+            System.out.println("Hola " + nombre + "\n cual es su dni :");
+            System.out.println("INSERTE SOLO LAS PRIMERAS 8 CIFRAS");
+            int dni = sc.nextInt();
+
             System.out.println("Inserte la letra de su dni");
             String letra_Dni = sc.next();
             try {
                 Integer a = Integer.parseInt(letra_Dni);
-                a = 0;
+
             } catch (Exception el) {
-                 DNI = dni + letra_Dni;
-                
+                DNI = dni + letra_Dni;
+
                 System.out.println();
                 ArrayList<String> productInfo = new ArrayList<>();
-                persona persona = new persona();
+
                 String productNameSS = "";
-                
-                double returnPrice = 0.0;
+
+                double returnPrice = 0.0 + persona.getTotal();
 
                 try {
                     // Abre el archivo Excel para lectura.
@@ -165,23 +175,31 @@ public class excel {
                     // Imprime información relevante.
                     System.out.println("Producto : " + productNameSS);
                     System.out.println("Precio : " + returnPrice);
-                    System.out.println("Total : " + total);
+                    System.out.println("Total : " + ((int) persona.getTotal()));
+                    System.out.println(persona.getDni());
                     System.out.println("-------------------");
 
-                    // Cierra el archivo Excel.
-                    workbook.close();
+                    System.out.println("Quieres seguir comprando ¿?");
+                    System.out.println("1. Continuar");
+                    System.out.println("2. Salir");
+                    int as = sc.nextInt();
+                    if (as == 1) {
+                        keepCase2 = true;
+                    } else {
+                        keepCase2 = false;
+                    }
 
-                    
+                    workbook.close();
 
                 } catch (IOException k) {
                     System.out.println("Error al acceder al archivo Excel");
-                    
+
                 }
-                
+                nigus ++;
             }
-            
         }
 
-    }
-
+    }while (keepCase2);
+            }
+            
 }

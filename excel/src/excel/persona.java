@@ -30,8 +30,7 @@ public class persona {
     public void setListaCompra(ArrayList<String> listaCompra) {
         ListaCompra = listaCompra;
     }
-
-    private double total = 0;
+    private double total;
 
 
 

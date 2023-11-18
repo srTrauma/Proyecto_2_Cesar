@@ -28,13 +28,9 @@ public class ogIndex {
                         break;
 
                     case 2:
-                   
-                        excel.mostrarExcel();
-                        System.out.println("Inserte el ID del producto que quiere comprar");
-                        Integer userInput = sc.nextInt();
-                        excel.recogerDatosExcel(userInput);
-                        break;
-
+                    excel.recogerDatosExcel();
+                       
+                    break;
                     case 3:
                         System.out.println("Saliendo del programa");
                         initCondition = false;
